@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.создатьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -88,6 +88,8 @@
             this.lblZaraz = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.lblDateStat = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -461,6 +463,7 @@
             this.справкаToolStripButton.Name = "справкаToolStripButton";
             this.справкаToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.справкаToolStripButton.Text = "Спр&авка";
+            this.справкаToolStripButton.Click += new System.EventHandler(this.справкаToolStripButton_Click);
             // 
             // lbCountries
             // 
@@ -500,13 +503,13 @@
             // 
             // chart1
             // 
-            chartArea2.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea2);
+            chartArea1.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea1);
             this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend2.AutoFitMinFontSize = 6;
-            legend2.Name = "Legend2";
-            legend2.TableStyle = System.Windows.Forms.DataVisualization.Charting.LegendTableStyle.Tall;
-            this.chart1.Legends.Add(legend2);
+            legend1.AutoFitMinFontSize = 6;
+            legend1.Name = "Legend2";
+            legend1.TableStyle = System.Windows.Forms.DataVisualization.Charting.LegendTableStyle.Tall;
+            this.chart1.Legends.Add(legend1);
             this.chart1.Location = new System.Drawing.Point(3, 19);
             this.chart1.Name = "chart1";
             this.chart1.Size = new System.Drawing.Size(635, 630);
@@ -532,6 +535,8 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.lblDateStat);
+            this.groupBox3.Controls.Add(this.label2);
             this.groupBox3.Controls.Add(this.btnAdd);
             this.groupBox3.Controls.Add(this.btnClear);
             this.groupBox3.Controls.Add(this.lblZaraz_Sut);
@@ -549,7 +554,7 @@
             // 
             // btnAdd
             // 
-            this.btnAdd.Location = new System.Drawing.Point(34, 227);
+            this.btnAdd.Location = new System.Drawing.Point(35, 251);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(92, 51);
             this.btnAdd.TabIndex = 10;
@@ -559,7 +564,7 @@
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(34, 170);
+            this.btnClear.Location = new System.Drawing.Point(35, 194);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(92, 51);
             this.btnClear.TabIndex = 9;
@@ -572,7 +577,7 @@
             this.lblZaraz_Sut.AutoSize = true;
             this.lblZaraz_Sut.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.lblZaraz_Sut.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lblZaraz_Sut.Location = new System.Drawing.Point(9, 129);
+            this.lblZaraz_Sut.Location = new System.Drawing.Point(10, 163);
             this.lblZaraz_Sut.Name = "lblZaraz_Sut";
             this.lblZaraz_Sut.Size = new System.Drawing.Size(17, 22);
             this.lblZaraz_Sut.TabIndex = 7;
@@ -583,7 +588,7 @@
             this.lblZaraz.AutoSize = true;
             this.lblZaraz.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.lblZaraz.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lblZaraz.Location = new System.Drawing.Point(9, 57);
+            this.lblZaraz.Location = new System.Drawing.Point(10, 91);
             this.lblZaraz.Name = "lblZaraz";
             this.lblZaraz.Size = new System.Drawing.Size(17, 22);
             this.lblZaraz.TabIndex = 8;
@@ -593,7 +598,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label3.Location = new System.Drawing.Point(5, 89);
+            this.label3.Location = new System.Drawing.Point(6, 123);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(126, 34);
             this.label3.TabIndex = 6;
@@ -603,11 +608,32 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(5, 37);
+            this.label1.Location = new System.Drawing.Point(6, 71);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(146, 17);
             this.label1.TabIndex = 5;
             this.label1.Text = "Заразившихся всего:";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label2.Location = new System.Drawing.Point(6, 19);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(124, 17);
+            this.label2.TabIndex = 11;
+            this.label2.Text = "Дата статистики:";
+            // 
+            // lblDateStat
+            // 
+            this.lblDateStat.AutoSize = true;
+            this.lblDateStat.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.lblDateStat.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblDateStat.Location = new System.Drawing.Point(9, 36);
+            this.lblDateStat.Name = "lblDateStat";
+            this.lblDateStat.Size = new System.Drawing.Size(17, 22);
+            this.lblDateStat.TabIndex = 12;
+            this.lblDateStat.Text = "*";
             // 
             // Form1
             // 
@@ -699,6 +725,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.Label lblDateStat;
+        private System.Windows.Forms.Label label2;
     }
 }
 

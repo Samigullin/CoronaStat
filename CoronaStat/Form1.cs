@@ -26,7 +26,10 @@ namespace Corona
 
         private void создатьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            database = new Countries();            
+            database = new Countries();
+            this.chart1.Series.Clear();
+            var lastDate = database[0].Times[database[0].Times.Length - 1];
+            lblDateStat.Text = lastDate.Date.ToString();
             foreach (var item in database)
             {
                 lbCountries.Items.Add(item);
@@ -70,7 +73,11 @@ namespace Corona
             {
                 database = new Countries();
                 database.Load(dialog.FileName);
-                
+                this.chart1.Series.Clear();
+                foreach (var item in database)
+                {
+                    lbCountries.Items.Add(item);
+                }
             }
         }
 
@@ -117,7 +124,12 @@ namespace Corona
 
         private void опрограммеToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Парсер статистики по заражениям короновирусом.\nДанные от института Хопкинса.", "О программе");
+            MessageBox.Show("Парсер статистики по заражениям короновирусом.\nДанные от института Хопкинса.\nАвтор: Самигуллин А.И.", "О программе");
+        }
+
+        private void справкаToolStripButton_Click(object sender, EventArgs e)
+        {
+            опрограммеToolStripMenuItem_Click(sender, e);
         }
     }
 }
