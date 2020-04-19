@@ -13,6 +13,7 @@ namespace Corona
     public partial class Form1 : Form
     {
         Countries database = null;
+        DataTable dtCountries = null;
 
         public Form1()
         {
@@ -29,13 +30,28 @@ namespace Corona
             database = new Countries();
             this.chart1.Series.Clear();
             var lastDate = database[0].Times[database[0].Times.Length - 1];
-            lblDateStat.Text = lastDate.Date.ToString();
+            lblDateStat.Text = lastDate.ToShortDateString();
+            lbCountries.DisplayMember = "Country";
+            lbCountries.DataSource = GetData();
+            tbSearch.Enabled = true;
+
+        }
+
+        private DataTable GetData()
+        {
+            dtCountries = new DataTable();
+            dtCountries.Columns.Add("Country");
             foreach (var item in database)
             {
-                lbCountries.Items.Add(item);
+                dtCountries.Rows.Add(item);
             }
-            
-            
+            return dtCountries;
+        }
+
+        private void tbSearch_TextChanged(object sender, EventArgs e)
+        {
+            DataView dvCoutries = dtCountries.DefaultView;
+            dvCoutries.RowFilter = "Country LIKE '%" + tbSearch.Text + "%'";
         }
 
         private void UpdateInfo()
@@ -45,11 +61,15 @@ namespace Corona
                 return;
             }
             var ind = lbCountries.SelectedIndex;
-            var sName = database[ind].ToString();
-            var last = database[ind].Counts[database[ind].Counts.Length - 1];
-            var prev = database[ind].Counts[database[ind].Counts.Length - 2];
-            lblZaraz.Text = last.ToString();
-            lblZaraz_Sut.Text = (last - prev).ToString();
+            if (ind > -1)
+            {
+                var sName = database[ind].ToString();
+                var last = database[ind].Counts[database[ind].Counts.Length - 1];
+                var prev = database[ind].Counts[database[ind].Counts.Length - 2];
+                lblZaraz.Text = last.ToString();
+                lblZaraz_Sut.Text = (last - prev).ToString();
+            }
+
         }
 
 
@@ -71,6 +91,7 @@ namespace Corona
             dialog.Filter = "XML файл|*.XML|Все файлы|*.*";
             if (dialog.ShowDialog() == DialogResult.OK)
             {
+                tbSearch.Enabled = true;
                 database = new Countries();
                 database.Load(dialog.FileName);
                 this.chart1.Series.Clear();
@@ -85,6 +106,7 @@ namespace Corona
         private void Form1_Load(object sender, EventArgs e)
         {
             //database = new Countries();
+            tbSearch.Enabled = false;
         }
 
         private void lbCountries_SelectedIndexChanged(object sender, EventArgs e)
@@ -102,10 +124,15 @@ namespace Corona
 
             try
             {
-                var ind = lbCountries.SelectedIndex;
-                var sName = database[ind].ToString();
+                //var ind = lbCountries.SelectedIndex;    
+                //получаем выбранный элемент в списке
+                var sName = lbCountries.Text; //database[ind].ToString();
+                //получаем индекс по имени. Такой костыль нужен, поскольку при фильтрации номера сдвигаются, а имена постоянны
+                var ind = database.GetIndFromName(sName);
+                //добваляем перо на чарт
                 this.chart1.Series.Add(sName);
                 this.chart1.Series[sName].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+
                 var cnt = 0;
                 foreach (var item in database[ind].Times)
                 {
@@ -117,6 +144,23 @@ namespace Corona
 
         }
 
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //var ind = lbCountries.SelectedIndex;
+                //var sName = database[ind].ToString();
+
+                //получаем выбранный элемент в списке
+                var sName = lbCountries.Text;
+                //получаем индекс по имени. Такой костыль нужен, поскольку при фильтрации номера сдвигаются, а имена постоянны
+                var ind = database.GetIndFromName(sName);
+                this.chart1.Series.RemoveAt(this.chart1.Series.IndexOf(sName));
+
+            }
+            catch { }
+        }
+
         private void lbCountries_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             btnAdd_Click(sender, e);
@@ -124,12 +168,16 @@ namespace Corona
 
         private void опрограммеToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Парсер статистики по заражениям короновирусом.\nДанные от института Хопкинса.\nАвтор: Самигуллин А.И.", "О программе");
+            MessageBox.Show("Статистика по заражениям короновирусом в мире.\nДанные от института Хопкинса.\n\nАвтор: Самигуллин А.И.", "О программе");
         }
 
         private void справкаToolStripButton_Click(object sender, EventArgs e)
         {
             опрограммеToolStripMenuItem_Click(sender, e);
         }
+
+
+
+
     }
 }

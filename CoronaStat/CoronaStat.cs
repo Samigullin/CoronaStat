@@ -9,21 +9,42 @@ using System.Xml.Serialization;
 
 namespace Corona
 {
+    /// <summary>
+    /// Класс страны
+    /// </summary>
     public class Country
     {
         public string CountryName { get; set; }
-        public string Province { get; set; }
+        //public string Province { get; set; }
         public DateTime[] Times { get; set; }
         public double[] Counts { get; set; }
         public override string ToString()
         {
-            return $"{CountryName}. {Province}";
+            return $"{CountryName}";
         }
     }
     public class Countries
     {
         List<Country> countries;// = new List<Country>();
 
+        /// <summary>
+        /// Получение индекса страны в массиве по имени
+        /// </summary>
+        /// <param name="_name"></param>
+        /// <returns></returns>
+        public int GetIndFromName(string _name)
+        {
+            for (int i = 0; i < countries.Count; i++)
+            {
+                if (_name == countries[i].CountryName) return i;
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Итератор
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator GetEnumerator()
         {
             for (int i = 0; i < countries.Count; i++)
@@ -31,6 +52,11 @@ namespace Corona
                 yield return countries[i];
             }
         }
+        /// <summary>
+        /// Индексатор
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public Country this[int index]
         {
             get 
@@ -38,6 +64,9 @@ namespace Corona
             set { countries[index] = value; }
         }
 
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public Countries()
         {
             countries = new List<Country>();
@@ -86,14 +115,18 @@ namespace Corona
             {
                 countries.Add(new Country
                 {
-                    CountryName = item.Country,
-                    Province = item.Province,
+                    CountryName = (item.Province == "")? item.Country: $"{item.Country}, {item.Province}",
+                    //Province = item.Province,
                     Counts = item.Counts,
                     Times = times
                 });
             }
 
         }
+        /// <summary>
+        /// Сохранение в XML файл
+        /// </summary>
+        /// <param name="fileName"></param>
         public void Save(string fileName)
         {
             XmlSerializer xmlFormat = new XmlSerializer(typeof(List<Country>));
@@ -105,6 +138,10 @@ namespace Corona
 
         }
 
+        /// <summary>
+        /// Загрузка из XML файла
+        /// </summary>
+        /// <param name="fileName"></param>
         public void Load(string fileName)
         {
             XmlSerializer xmlFormat = new XmlSerializer(typeof(List<Country>));
