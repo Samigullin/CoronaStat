@@ -59,5 +59,35 @@ namespace CoronaStat.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap iconfinder_Add_131846 {
+            get {
+                object obj = ResourceManager.GetObject("iconfinder_Add_131846", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap iconfinder_Close_file_131887 {
+            get {
+                object obj = ResourceManager.GetObject("iconfinder_Close_file_131887", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap iconfinder_Delete_131713 {
+            get {
+                object obj = ResourceManager.GetObject("iconfinder_Delete_131713", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,19 +27,28 @@ namespace Corona
         private void создатьToolStripMenuItem_Click(object sender, EventArgs e)
         {
             database = new Countries();
-            this.chart1.Series.Clear();
-            var lastDate = database[0].Times[database[0].Times.Length - 1];
-            lblDateStat.Text = lastDate.ToShortDateString();
+            this.chart1.Series.Clear();            
             lbCountries.DisplayMember = "Country";
             lbCountries.DataSource = GetData();
+            tbSearch.Text = "";
             tbSearch.Enabled = true;
+            ttslCount.Text = $"Найдено записей: {database.Count()}";
 
         }
 
+        /// <summary>
+        /// Заполнение Списка городов
+        /// </summary>
+        /// <returns>Таблица городов</returns>
         private DataTable GetData()
         {
+            //возьмем последнюю дату в статистике нулевого города для определения "свежести" данных
+            var lastDate = database[0].Times[database[0].Times.Length - 1];
+            lblDateStat.Text = lastDate.ToShortDateString();
+
             dtCountries = new DataTable();
             dtCountries.Columns.Add("Country");
+            
             foreach (var item in database)
             {
                 dtCountries.Rows.Add(item);
@@ -50,6 +58,7 @@ namespace Corona
 
         private void tbSearch_TextChanged(object sender, EventArgs e)
         {
+            lbCountries.ClearSelected();
             DataView dvCoutries = dtCountries.DefaultView;
             dvCoutries.RowFilter = "Country LIKE '%" + tbSearch.Text + "%'";
         }
@@ -60,10 +69,13 @@ namespace Corona
             {
                 return;
             }
-            var ind = lbCountries.SelectedIndex;
+            
+            var sName = lbCountries.Text; 
+            //получаем индекс по имени. Такой костыль нужен, поскольку при фильтрации номера сдвигаются, а имена постоянны
+            var ind = database.GetIndFromName(sName);
             if (ind > -1)
             {
-                var sName = database[ind].ToString();
+                //var sName = database[ind].ToString();
                 var last = database[ind].Counts[database[ind].Counts.Length - 1];
                 var prev = database[ind].Counts[database[ind].Counts.Length - 2];
                 lblZaraz.Text = last.ToString();
@@ -91,14 +103,14 @@ namespace Corona
             dialog.Filter = "XML файл|*.XML|Все файлы|*.*";
             if (dialog.ShowDialog() == DialogResult.OK)
             {
+                tbSearch.Text = "";
                 tbSearch.Enabled = true;
                 database = new Countries();
                 database.Load(dialog.FileName);
                 this.chart1.Series.Clear();
-                foreach (var item in database)
-                {
-                    lbCountries.Items.Add(item);
-                }
+                lbCountries.DisplayMember = "Country";
+                lbCountries.DataSource = GetData();
+                ttslCount.Text = $"Найдено записей: {database.Count()}";
             }
         }
 
@@ -107,6 +119,7 @@ namespace Corona
         {
             //database = new Countries();
             tbSearch.Enabled = false;
+            tsslCurrentTime.Alignment = ToolStripItemAlignment.Right;
         }
 
         private void lbCountries_SelectedIndexChanged(object sender, EventArgs e)
@@ -119,7 +132,7 @@ namespace Corona
             this.chart1.Series.Clear();
         }
 
-        private void btnAdd_Click(object sender, EventArgs e)
+        private void tsbAdd_Click(object sender, EventArgs e)
         {
 
             try
@@ -130,21 +143,24 @@ namespace Corona
                 //получаем индекс по имени. Такой костыль нужен, поскольку при фильтрации номера сдвигаются, а имена постоянны
                 var ind = database.GetIndFromName(sName);
                 //добваляем перо на чарт
-                this.chart1.Series.Add(sName);
-                this.chart1.Series[sName].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-
-                var cnt = 0;
-                foreach (var item in database[ind].Times)
+                if (ind > -1)
                 {
-                    cnt++;
-                    this.chart1.Series[sName].Points.AddXY(item.Date, database[ind].Counts[cnt - 1]);
+                    this.chart1.Series.Add(sName);
+                    this.chart1.Series[sName].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+
+                    var cnt = 0;
+                    foreach (var item in database[ind].Times)
+                    {
+                        cnt++;
+                        this.chart1.Series[sName].Points.AddXY(item.Date, database[ind].Counts[cnt - 1]);
+                    }
                 }
             }
             catch { }
 
         }
 
-        private void btnDelete_Click(object sender, EventArgs e)
+        private void tsbDelete_Click(object sender, EventArgs e)
         {
             try
             {
@@ -163,7 +179,7 @@ namespace Corona
 
         private void lbCountries_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            btnAdd_Click(sender, e);
+            tsbAdd_Click(sender, e);
         }
 
         private void опрограммеToolStripMenuItem_Click(object sender, EventArgs e)
@@ -176,8 +192,34 @@ namespace Corona
             опрограммеToolStripMenuItem_Click(sender, e);
         }
 
+        private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = "XML файл|*.XML|Все файлы|*.*";
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                database.Save(dialog.FileName);
+            }
+        }
 
+        private void сохранитьToolStripButton_Click(object sender, EventArgs e)
+        {
+            сохранитьToolStripMenuItem_Click(sender, e);
+        }
 
+        private void выходToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
 
+        private void tsbClear_Clic(object sender, EventArgs e)
+        {
+            this.chart1.Series.Clear();
+        }
+
+        private void tsbDelete_Click_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }

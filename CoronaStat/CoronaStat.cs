@@ -40,6 +40,10 @@ namespace Corona
             }
             return -1;
         }
+        public int Count()
+        {
+            return countries.Count;
+        }
 
         /// <summary>
         /// Итератор
