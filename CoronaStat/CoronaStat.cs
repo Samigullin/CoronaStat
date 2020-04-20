@@ -14,6 +14,7 @@ namespace Corona
     /// </summary>
     public class Country
     {
+        public int DaysCount { get { return Times.Length; }  }
         public string CountryName { get; set; }
         //public string Province { get; set; }
         public DateTime[] Times { get; set; }
