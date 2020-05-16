@@ -7,6 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using LiveCharts; //Core of the library
+using LiveCharts.Wpf; //The WPF controls
+using LiveCharts.WinForms; //the WinForm wrappers
+using System.Diagnostics;
+using LiveCharts.Configurations;
+using LiveCharts.Defaults;
 
 namespace Corona
 {
@@ -15,6 +21,8 @@ namespace Corona
         Countries database = null;
         DataTable dtCountries = null;
         int zoomCnt = 0;
+        int chartCnt = -1;
+        public string[] Labels { get; set; }
 
         public Form1()
         {
@@ -75,7 +83,7 @@ namespace Corona
         }
 
         /// <summary>
-        /// Обновление информации в окте статистики
+        /// Обновление информации в окне статистики
         /// </summary>
         private void UpdateInfo()
         {
@@ -184,6 +192,7 @@ namespace Corona
         private void tsbAdd_Click(object sender, EventArgs e)
         {
 
+
             try
             {
                 //var ind = lbCountries.SelectedIndex;    
@@ -194,22 +203,62 @@ namespace Corona
                 //добваляем перо на чарт
                 if (ind > -1)
                 {
+                    #region chart1
                     this.chart1.Series.Add(sName);
                     this.chart1.Series[sName].BorderWidth = 3;
                     this.chart1.Series[sName].XValueType = ChartValueType.Date;
                     this.chart1.Series[sName].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+                    #endregion
+
+                    #region chart2
+
+                    var dateTimePoint = new ChartValues<LiveCharts.Defaults.DateTimePoint>
+                    {
+                        new DateTimePoint(new DateTime(1950, 1, 1), .549),
+                    };
+
+                    //var mapper = new CartesianMapper<double>()
+                    //  .X((value, index) => value) //use the index as X
+                    //  .Y((value, index) => value) //use the value as Y
+                    //  ;
+
+
+
+
+                    chartCnt++;
+                    Chart2.Series.Add(new LineSeries
+                    {
+                        Title = sName,
+                        Values = new ChartValues<double> { },
+                        PointGeometrySize = 5,
+                    }
+                    );
+
+                    
+
+
+                    #endregion
 
                     var cnt = 0;
                     foreach (var item in database[ind].Times)
                     {
                         cnt++;
+
+                        Chart2.Series[chartCnt].Values.Add(database[ind].Counts[cnt - 1]);
+                       
                         this.chart1.Series[sName].Points.AddXY(item.Date.ToShortDateString(), database[ind].Counts[cnt - 1]);
                     }
+
+
+
+
+
                 }
             }
-            catch { }
+            catch { Debug.WriteLine("2"); }
 
         }
+
 
         /// <summary>
         /// Удаление пера с тренда
@@ -224,9 +273,13 @@ namespace Corona
                 var sName = lbCountries.Text;
                 //получаем индекс по имени. Такой костыль нужен, поскольку при фильтрации номера сдвигаются, а имена постоянны
                 var ind = database.GetIndFromName(sName);
+
+                //int tempInd = Chart2.Series.IndexOf(sName);
+                Chart2.Series.RemoveAt(0);
+                chartCnt--;
                 this.chart1.Series.RemoveAt(this.chart1.Series.IndexOf(sName));
             }
-            catch { }
+            catch (Exception exc) { Debug.WriteLine(exc.Message); }
         }
 
         private void lbCountries_MouseDoubleClick(object sender, MouseEventArgs e)

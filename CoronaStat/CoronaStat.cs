@@ -41,6 +41,11 @@ namespace Corona
             }
             return -1;
         }
+
+        /// <summary>
+        /// Возвращает количество записей в списке
+        /// </summary>
+        /// <returns></returns>
         public int Count()
         {
             return countries.Count;
@@ -128,6 +133,7 @@ namespace Corona
             }
 
         }
+
         /// <summary>
         /// Сохранение в XML файл
         /// </summary>
