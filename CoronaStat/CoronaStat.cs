@@ -7,14 +7,15 @@ using System.Linq;
 using System.Net.Http;
 using System.Xml.Serialization;
 
-namespace Corona
+namespace CoronaStat
 {
     /// <summary>
     /// Класс страны
     /// </summary>
     public class Country
     {
-        public int DaysCount { get { return Times.Length; }  }
+        public int DaysCount => Times.Length;
+
         public string CountryName { get; set; }
         //public string Province { get; set; }
         public DateTime[] Times { get; set; }
@@ -26,7 +27,7 @@ namespace Corona
     }
     public class Countries
     {
-        List<Country> countries;// = new List<Country>();
+        List<Country> _countries;// = new List<Country>();
 
         /// <summary>
         /// Получение индекса страны в массиве по имени
@@ -35,9 +36,9 @@ namespace Corona
         /// <returns></returns>
         public int GetIndFromName(string _name)
         {
-            for (int i = 0; i < countries.Count; i++)
+            for (int i = 0; i < _countries.Count; i++)
             {
-                if (_name == countries[i].CountryName) return i;
+                if (_name == _countries[i].CountryName) return i;
             }
             return -1;
         }
@@ -48,7 +49,7 @@ namespace Corona
         /// <returns></returns>
         public int Count()
         {
-            return countries.Count;
+            return _countries.Count;
         }
 
         /// <summary>
@@ -57,11 +58,9 @@ namespace Corona
         /// <returns></returns>
         public IEnumerator GetEnumerator()
         {
-            for (int i = 0; i < countries.Count; i++)
-            {
-                yield return countries[i];
-            }
+            return _countries.GetEnumerator();
         }
+
         /// <summary>
         /// Индексатор
         /// </summary>
@@ -70,8 +69,8 @@ namespace Corona
         public Country this[int index]
         {
             get 
-            { if (index > -1) return countries[index]; else return null;            }
-            set { countries[index] = value; }
+            { if (index > -1) return _countries[index]; else return null;            }
+            set { _countries[index] = value; }
         }
 
         /// <summary>
@@ -79,7 +78,7 @@ namespace Corona
         /// </summary>
         public Countries()
         {
-            countries = new List<Country>();
+            _countries = new List<Country>();
 
             var csv = new HttpClient().GetAsync(@"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv")
            .Result
@@ -123,7 +122,7 @@ namespace Corona
 
             foreach (var item in countries_data)
             {
-                countries.Add(new Country
+                _countries.Add(new Country
                 {
                     CountryName = (item.Province == "")? item.Country: $"{item.Country}, {item.Province}",
                     //Province = item.Province,
@@ -144,7 +143,7 @@ namespace Corona
             //Создаем файловый поток(проще говоря создаем файл)
             Stream fStream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
             //В этот поток записываем сериализованные данные(записываем xml файл)
-            xmlFormat.Serialize(fStream, countries);
+            xmlFormat.Serialize(fStream, _countries);
             fStream.Close();
 
         }
@@ -157,7 +156,7 @@ namespace Corona
         {
             XmlSerializer xmlFormat = new XmlSerializer(typeof(List<Country>));
             Stream fStream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-            countries = (List<Country>)xmlFormat.Deserialize(fStream);
+            _countries = (List<Country>)xmlFormat.Deserialize(fStream);
             fStream.Close();
             
         }

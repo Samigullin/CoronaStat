@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using LiveCharts; //Core of the library
-using LiveCharts.Wpf; //The WPF controls
-using LiveCharts.WinForms; //the WinForm wrappers
-using System.Diagnostics;
-using LiveCharts.Configurations;
+using LiveCharts;
 using LiveCharts.Defaults;
+using LiveCharts.Wpf;
+//Core of the library
+//The WPF controls
+//the WinForm wrappers
 
-namespace Corona
+namespace CoronaStat
 {
     public partial class Form1 : Form
     {
@@ -95,22 +91,19 @@ namespace Corona
             var sName = lbCountries.Text; 
             //получаем индекс по имени. Такой костыль нужен, поскольку при фильтрации номера сдвигаются, а имена постоянны
             var ind = database.GetIndFromName(sName);
-            if (ind > -1)
-            {
-                //var sName = database[ind].ToString();
-                var last = database[ind].Counts[database[ind].Counts.Length - 1];
-                var prev = database[ind].Counts[database[ind].Counts.Length - 2];
-                lblZaraz.Text = last.ToString();
-                lblZaraz_Sut.Text = (last - prev).ToString();
-            }
+            if (ind <= -1) return;
+            //var sName = database[ind].ToString();
+            var last = database[ind].Counts[database[ind].Counts.Length - 1];
+            var prev = database[ind].Counts[database[ind].Counts.Length - 2];
+            lblZaraz.Text = last.ToString();
+            lblZaraz_Sut.Text = (last - prev).ToString();
 
         }
                
         #region Сохранение и открытие XML
         private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.Filter = "XML файл|*.XML|Все файлы|*.*";
+            var dialog = new SaveFileDialog {Filter = "XML файл|*.XML|Все файлы|*.*"};
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 database.Save(dialog.FileName);
@@ -124,19 +117,17 @@ namespace Corona
        
         private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filter = "XML файл|*.XML|Все файлы|*.*";
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                tbSearch.Text = "";
-                tbSearch.Enabled = true;
-                database = new Countries();
-                database.Load(dialog.FileName);
-                this.chart1.Series.Clear();
-                lbCountries.DisplayMember = "Country";
-                lbCountries.DataSource = GetData();
-                ttslCount.Text = $"Найдено записей: {database.Count()}";
-            }
+            var dialog = new OpenFileDialog {Filter = "XML файл|*.XML|Все файлы|*.*"};
+            if (dialog.ShowDialog() != DialogResult.OK) return;
+
+            tbSearch.Text = "";
+            tbSearch.Enabled = true;
+            database = new Countries();
+            database.Load(dialog.FileName);
+            this.chart1.Series.Clear();
+            lbCountries.DisplayMember = "Country";
+            lbCountries.DataSource = GetData();
+            ttslCount.Text = $"Найдено записей: {database.Count()}";
         }
         #endregion
 
@@ -177,7 +168,10 @@ namespace Corona
                     zoomCnt++;
                 }
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
         }
         private void lbCountries_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -332,7 +326,10 @@ namespace Corona
 
                 zoomCnt++;
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
         }
 
         /// <summary>
@@ -381,18 +378,21 @@ namespace Corona
                     zoomCnt--;
                 }
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
         }
 
         private void опрограммеToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Статистика по заражениям короновирусом в мире.\nДанные от института Хопкинса.\n\nАвтор: Самигуллин А.И.", "О программе");
+            MessageBox.Show("Статистика по заражениям короновирусом в мире.\nДанные от института Хопкинса.\n\nАвтор: Самигуллин А.И.", @"О программе");
         }
         private void справкаToolStripButton_Click(object sender, EventArgs e)
         {
             MessageBox.Show("1. Для начала необходимо скачать новый список кнопкой 'Создать', либо открыть данные с локального диска кнопкой 'Открыть'.\n\n" +
                 "2. Добавление страны на график производится двойным кликом в списке стран, либо соответствующей кнопкой на панели.\n\n" +
-                "3. Для удобства просмотра в поле графика действует масштабирование роликом мышки, либо нажатием на соответствующие кнопки.", "Помощь");
+                "3. Для удобства просмотра в поле графика действует масштабирование роликом мышки, либо нажатием на соответствующие кнопки.", @"Помощь");
         }
         private void выходToolStripMenuItem_Click(object sender, EventArgs e)
         {

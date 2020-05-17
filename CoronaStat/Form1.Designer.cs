@@ -1,4 +1,4 @@
-﻿namespace Corona
+﻿namespace CoronaStat
 {
     partial class Form1
     {
